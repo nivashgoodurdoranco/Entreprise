@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Employe;
 use App\Form\EmployeFormType;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,7 +18,18 @@ class EmployeController extends AbstractController
     {
         $employer = new Employe();
 
-        $form = $this->createForm(EmployeFormType::class);
+        $form = $this->createForm(EmployeFormType::class, $employer);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $employer->setCreatedAt(new DateTime());
+            $entityManagerInterface->persist($employer);
+            $entityManagerInterface->flush();
+
+            return $this->redirectToRoute('default_home');
+
+        }
 
         return $this->render('employe/employe.html.twig', [
             'form_employe' => $form->createView()
