@@ -23,4 +23,16 @@ class EmployeController extends AbstractController
             'form_employe' => $form->createView()
         ]);
     }
+
+
+    #[Route('/montrer-un-employe', name: 'show_employe')]
+    public function showEmploye(EntityManagerInterface $entityManagerInterface): Response
+    {
+        $employes = $entityManagerInterface->getRepository(Employe::class)->findAll();
+
+
+        return $this->render('employe/show_employe.html.twig', [
+            'employes' => $employes
+        ]);
+    }
 }
